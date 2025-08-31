@@ -1,4 +1,4 @@
-const snapsave = require("../snapsave-downloader/src/index");
+const snapsave = require("../lib/snapsave");
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
