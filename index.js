@@ -1,10 +1,13 @@
 const express = require("express");
+const path = require("path");
 const app = express();
 const snapsave = require("./snapsave-downloader/src/index");
-const port = 3000;
+const port = process.env.PORT || 3000;
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get("/", (req, res) => {
-  res.json({ message: "Hello World!" });
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.get("/igdl", async (req, res) => {

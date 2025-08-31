@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Downloader</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .container { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); max-width: 500px; width: 90%; }
+        h1 { text-align: center; color: #333; margin-bottom: 2rem; }
+        .input-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; color: #555; font-weight: bold; }
+        input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s; }
+        input:focus { outline: none; border-color: #667eea; }
+        button { width: 100%; padding: 15px; background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+        button:hover { transform: translateY(-2px); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .result { margin-top: 1rem; padding: 1rem; border-radius: 8px; display: none; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .loading { text-align: center; margin-top: 1rem; display: none; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #667eea; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📸 Instagram Downloader</h1>
+        <div class="input-group">
+            <label for="url">Instagram URL</label>
+            <input type="url" id="url" placeholder="Paste Instagram URL here..." required>
+        </div>
+        <button id="downloadBtn">🚀 Download</button>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const urlInput = document.getElementById('url');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+
+        downloadBtn.addEventListener('click', async () => {
+            const url = urlInput.value.trim();
+            if (!url) return;
+
+            if (!url.includes('instagram.com')) {
+                showResult('error', '❌ Please enter a valid Instagram URL');
+                return;
+            }
+
+            downloadBtn.disabled = true;
+            loading.style.display = 'block';
+            result.style.display = 'none';
+
+            try {
+                const response = await fetch(`/igdl?url=${encodeURIComponent(url)}`);
+                const data = await response.json();
+
+                if (response.ok && data.url) {
+                    showResult('success', '✅ Download ready! Click the link below:');
+                    result.innerHTML += `<br><a href="${data.url.url}" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold;">📥 Download File</a>`;
+                } else {
+                    showResult('error', '❌ ' + (data.error || 'Download failed'));
+                }
+            } catch (error) {
+                showResult('error', '❌ Network error. Please try again.');
+            } finally {
+                downloadBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+
+        function showResult(type, message) {
+            result.className = `result ${type}`;
+            result.innerHTML = message;
+            result.style.display = 'block';
+        }
+
+        urlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') downloadBtn.click();
+        });
+    </script>
+</body>
+</html>
