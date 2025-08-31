@@ -1,4 +1,5 @@
 const snapsave = require("../lib/snapsave");
+const instagramDirect = require("../lib/instagram-direct");
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -20,12 +21,16 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: "URL parameter is missing" });
     }
 
-    const result = await snapsave(url);
+    let result = await snapsave(url);
+    
+    // If snapsave fails, try direct method
+    if (!result.status) {
+      result = await instagramDirect(url);
+    }
     
     if (!result.status) {
       return res.status(400).json({ 
-        error: result.msg || "Failed to download",
-        developer: result.developer 
+        error: result.msg || "Failed to download"
       });
     }
     
