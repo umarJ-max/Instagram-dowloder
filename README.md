@@ -1,20 +1,20 @@
-# 📸 Instagram Video Downloader API
+# 📸 Instagram Video Downloader
 
 **Created by Umar J**
 
 ## 🚀 Introduction
 
-A powerful and reliable Instagram video downloader API built with Node.js. Features multiple extraction methods for maximum success rate and a beautiful modern web interface.
+A powerful Instagram video downloader with a beautiful web interface. Simply paste any Instagram video URL and download it instantly. Built with Node.js and features multiple extraction methods for maximum reliability.
 
 ## ✨ Features
 
 - 📹 Download Instagram videos, reels, and IGTV
-- 🔄 Multiple extraction methods for reliability
-- 🎨 Modern, responsive web interface
-- ⚡ Fast and efficient processing
-- 🔒 CORS enabled for cross-origin requests
+- 🔄 Multiple extraction methods for high success rate
+- 🎨 Beautiful, modern web interface
+- ⚡ Fast and reliable downloads
+- 📱 Mobile-friendly responsive design
 
-## 🛠️ Installation
+## 🛠️ Setup
 
 1. **Clone the repository:**
    ```bash
@@ -27,44 +27,21 @@ A powerful and reliable Instagram video downloader API built with Node.js. Featu
    npm install
    ```
 
-3. **Start the application:**
+3. **Start the downloader:**
    ```bash
    npm start
    ```
 
-## 📚 API Usage
+## 🌐 How to Use
 
-### Endpoint
-```
-GET /api/igdl?url=<instagram_url>
-```
+1. Open your browser and go to `http://localhost:3000`
+2. Paste any Instagram video URL (posts, reels, IGTV)
+3. Click "Download" button
+4. Get your video download links instantly!
 
-### Example
-```
-http://localhost:3000/api/igdl?url=https://www.instagram.com/p/DLHQfPiyucu/
-```
+## 📝 Note
 
-### Response
-```json
-{
-  "success": true,
-  "developer": "@SamiHann",
-  "data": [
-    {
-      "quality": "HD",
-      "url": "https://video-url.mp4"
-    }
-  ]
-}
-```
-
-## 🌐 Web Interface
-
-Access the beautiful web interface at `http://localhost:3000` to download videos directly from your browser.
-
-## 📝 License
-
-This project is for educational purposes only. Please respect Instagram's terms of service.
+This tool is for educational and personal use only. Please respect Instagram's terms of service and content creators' rights.
 
 ---
 
