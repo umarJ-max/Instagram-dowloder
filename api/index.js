@@ -33,8 +33,20 @@ module.exports = async (req, res) => {
         return res.status(400).json({ error: "URL parameter is missing" });
       }
 
-      const downloadedURL = await snapsave(instagramUrl);
-      return res.status(200).json({ url: downloadedURL });
+      const result = await snapsave(instagramUrl);
+      
+      if (!result.status) {
+        return res.status(400).json({ 
+          error: result.msg || "Failed to download",
+          developer: result.developer 
+        });
+      }
+      
+      return res.status(200).json({
+        success: true,
+        developer: result.developer,
+        data: result.data
+      });
     } catch (err) {
       console.error("Error:", err.message);
       return res.status(500).json({ error: "Internal Server Error", details: err.message });
