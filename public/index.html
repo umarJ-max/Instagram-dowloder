@@ -59,12 +59,16 @@
             result.style.display = 'none';
 
             try {
-                const response = await fetch(`/igdl?url=${encodeURIComponent(url)}`);
+                const response = await fetch(`/api/igdl?url=${encodeURIComponent(url)}`);
                 const data = await response.json();
 
-                if (response.ok && data.url) {
-                    showResult('success', '✅ Download ready! Click the link below:');
-                    result.innerHTML += `<br><a href="${data.url.url}" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold;">📥 Download File</a>`;
+                if (response.ok && data.success && data.data) {
+                    showResult('success', '✅ Download links ready!');
+                    let links = '';
+                    data.data.forEach((item, index) => {
+                        links += `<br><a href="${item.url}" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold;">📥 Download ${item.quality}</a>`;
+                    });
+                    result.innerHTML += links;
                 } else {
                     showResult('error', '❌ ' + (data.error || 'Download failed'));
                 }

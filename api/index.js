@@ -10,18 +10,11 @@ module.exports = async (req, res) => {
   }
 
   if (req.method === 'GET' && req.url === '/') {
-    return res.status(200).send(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Instagram Video Downloader</title>
-      </head>
-      <body>
-        <h1>Instagram Video Downloader API</h1>
-        <p>Use /api/igdl?url=YOUR_INSTAGRAM_URL to download videos</p>
-      </body>
-      </html>
-    `);
+    const fs = require('fs');
+    const path = require('path');
+    const htmlPath = path.join(__dirname, '../public/index.html');
+    const html = fs.readFileSync(htmlPath, 'utf8');
+    return res.status(200).send(html);
   }
 
   if (req.method === 'GET' && req.url.startsWith('/api/igdl')) {
