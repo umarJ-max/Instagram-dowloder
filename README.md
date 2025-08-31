@@ -1,39 +1,71 @@
-# Instagram Video Downloader API
+# 📸 Instagram Video Downloader API
 
-## Introduction
+**Created by Umar J**
 
-This repository houses an API for effortlessly downloading Instagram videos using JavaScript. Created with Node.js and powered by instaloader, this API allows seamless integration of Instagram video downloading capabilities into your applications or projects.
+## 🚀 Introduction
 
-## Features
+A powerful and reliable Instagram video downloader API built with Node.js. Features multiple extraction methods for maximum success rate and a beautiful modern web interface.
 
-- Retrieve video URLs from Instagram posts.
-- Download videos from Instagram.
+## ✨ Features
 
-## Usage
+- 📹 Download Instagram videos, reels, and IGTV
+- 🔄 Multiple extraction methods for reliability
+- 🎨 Modern, responsive web interface
+- ⚡ Fast and efficient processing
+- 🔒 CORS enabled for cross-origin requests
+
+## 🛠️ Installation
 
 1. **Clone the repository:**
-
    ```bash
-   git clone https://github.com/milancodess/Instagram-Video-Downloader-API.git
+   git clone <your-repo-url>
+   cd Instagram-Downloder
    ```
 
 2. **Install dependencies:**
-
    ```bash
    npm install
    ```
 
-3. **Run the Node.js application:**
+3. **Start the application:**
    ```bash
-   node index.js
+   npm start
    ```
 
-## Endpoints
+## 📚 API Usage
 
-- `/igdl?url=`
+### Endpoint
+```
+GET /api/igdl?url=<instagram_url>
+```
 
-# Usage
+### Example
+```
+http://localhost:3000/api/igdl?url=https://www.instagram.com/p/DLHQfPiyucu/
+```
 
-- `http://localhost:3000/igdl?url=https://www.instagram.com/p/DLHQfPiyucu/`
+### Response
+```json
+{
+  "success": true,
+  "developer": "@SamiHann",
+  "data": [
+    {
+      "quality": "HD",
+      "url": "https://video-url.mp4"
+    }
+  ]
+}
+```
 
-**Note:** Please respect Instagram's terms of service and privacy while using this API. This tool is intended for educational and personal use only.
+## 🌐 Web Interface
+
+Access the beautiful web interface at `http://localhost:3000` to download videos directly from your browser.
+
+## 📝 License
+
+This project is for educational purposes only. Please respect Instagram's terms of service.
+
+---
+
+**Made with ❤️ by Umar J**
