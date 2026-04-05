@@ -14,6 +14,8 @@ module.exports = async (req, res) => {
     const path = require('path');
     const htmlPath = path.join(__dirname, '../public/index.html');
     const html = fs.readFileSync(htmlPath, 'utf8');
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
     return res.status(200).send(html);
   }
 
