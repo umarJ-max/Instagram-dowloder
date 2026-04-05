@@ -1,52 +1,31 @@
-const snapsave = require("../lib/snapsave");
+const express = require("express");
+const path = require("path");
+const app = express();
+const snapsave = require("./snapsave-downloader/src/index");
+const port = process.env.PORT || 3000;
 
-module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+app.use(express.static(path.join(__dirname, 'public')));
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
-  if (req.method === 'GET' && req.url === '/') {
-    const fs = require('fs');
-    const path = require('path');
-    const htmlPath = path.join(__dirname, '../public/index.html');
-    const html = fs.readFileSync(htmlPath, 'utf8');
-    res.setHeader("Content-Type", "text/html; charset=utf-8");
-    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-    return res.status(200).send(html);
-  }
+app.get("/igdl", async (req, res) => {
+  try {
+    const url = req.query.url;
 
-  if (req.method === 'GET' && req.url.startsWith('/api/igdl')) {
-    try {
-      const url = new URL(req.url, `http://${req.headers.host}`);
-      const instagramUrl = url.searchParams.get('url');
-
-      if (!instagramUrl) {
-        return res.status(400).json({ error: "URL parameter is missing" });
-      }
-
-      const result = await snapsave(instagramUrl);
-      
-      if (!result.status) {
-        return res.status(400).json({ 
-          error: result.msg || "Failed to download",
-          developer: result.developer 
-        });
-      }
-      
-      return res.status(200).json({
-        success: true,
-        developer: result.developer,
-        data: result.data
-      });
-    } catch (err) {
-      console.error("Error:", err.message);
-      return res.status(500).json({ error: "Internal Server Error", details: err.message });
+    if (!url) {
+      return res.status(400).json({ error: "URL parameter is missing" });
     }
-  }
 
-  return res.status(404).json({ error: "Not Found" });
-};
+    const downloadedURL = await snapsave(url);
+    res.json({ url: downloadedURL });
+  } catch (err) {
+    console.error("Error:", err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
