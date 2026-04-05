@@ -187,6 +187,13 @@
 
     .dl-card a:hover { background: #ede7de; }
 
+    /* ── CHIPS ── */
+    .chips { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .chip { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; font-weight: 500; padding: 0.4rem 0.85rem; border-radius: 99px; border: 1.5px solid; }
+    .chip.yes { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+    .chip.no  { background: #fff1f2; border-color: #fecdd3; color: #be123c; }
+    .chip-section-label { width: 100%; font-size: 0.7rem; color: #bbb; margin-bottom: 0.1rem; }
+
     /* ── FOOTER ── */
     footer {
       position: fixed;
@@ -235,6 +242,18 @@
   </div>
 
   <div class="results" id="results"></div>
+
+  <div class="chips">
+    <span class="chip-section-label">Works with</span>
+    <span class="chip yes">✓ Reels</span>
+    <span class="chip yes">✓ Video posts</span>
+    <span class="chip yes">✓ Carousels</span>
+    <span class="chip yes">✓ IGTV</span>
+    <span class="chip-section-label" style="margin-top:0.4rem">Does not work with</span>
+    <span class="chip no">✕ Stories</span>
+    <span class="chip no">✕ Private accounts</span>
+    <span class="chip no">✕ Photos</span>
+  </div>
 
 </div>
 
