@@ -1,103 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Downloader - Umar J</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #e73c7e 0%, #23a6d5 50%, #23d5ab 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .container { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 2.5rem; border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); max-width: 500px; width: 90%; border: 1px solid rgba(255,255,255,0.2); }
-        .brand { text-align: center; margin-bottom: 2rem; }
-        .brand h1 { color: #2c3e50; margin-bottom: 0.5rem; font-size: 2rem; }
-        .brand .creator { color: #e73c7e; font-weight: bold; font-size: 1.1rem; }
-        .input-group { margin-bottom: 1.5rem; }
-        label { display: block; margin-bottom: 0.5rem; color: #2c3e50; font-weight: 600; }
-        input { width: 100%; padding: 15px; border: 2px solid #e1e8ed; border-radius: 12px; font-size: 16px; transition: all 0.3s; background: rgba(255,255,255,0.8); }
-        input:focus { outline: none; border-color: #e73c7e; box-shadow: 0 0 0 3px rgba(231,60,126,0.1); }
-        button { width: 100%; padding: 18px; background: linear-gradient(45deg, #e73c7e, #23a6d5); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(231,60,126,0.3); }
-        button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(231,60,126,0.4); }
-        button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .result { margin-top: 1.5rem; padding: 1.2rem; border-radius: 12px; display: none; }
-        .success { background: linear-gradient(135deg, #d4edda, #c3e6cb); color: #155724; border: 1px solid #23d5ab; }
-        .error { background: linear-gradient(135deg, #f8d7da, #f5c6cb); color: #721c24; border: 1px solid #e73c7e; }
-        .loading { text-align: center; margin-top: 1.5rem; display: none; }
-        .spinner { border: 3px solid rgba(231,60,126,0.2); border-top: 3px solid #e73c7e; border-radius: 50%; width: 35px; height: 35px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .footer { text-align: center; margin-top: 2rem; color: #7f8c8d; font-size: 0.9rem; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instagram Downloader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: #faf7f2;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    /* big warm blob behind everything */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -10%;
+      right: -15%;
+      width: 55vw;
+      height: 55vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fcd5e0 0%, #fce8d5 45%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page { position: relative; z-index: 1; width: 100%; max-width: 480px; }
+
+    /* ── ICON ── */
+    .ig-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #f9ce34, #ee2a7b, #6228d7);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 24px rgba(238,42,123,0.25);
+    }
+
+    .ig-icon svg { width: 26px; height: 26px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── HEADING ── */
+    h1 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(2rem, 7vw, 2.8rem);
+      font-weight: 800;
+      color: #1a1a1a;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.4rem;
+    }
+
+    .sub {
+      font-size: 0.85rem;
+      color: #999;
+      margin-bottom: 2.2rem;
+      font-weight: 400;
+    }
+
+    /* ── INPUT ── */
+    .field {
+      position: relative;
+      margin-bottom: 0.75rem;
+    }
+
+    .field input {
+      width: 100%;
+      background: #fff;
+      border: 1.5px solid #e8e3db;
+      border-radius: 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      color: #1a1a1a;
+      padding: 1rem 1.2rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      padding-right: 110px;
+    }
+
+    .field input::placeholder { color: #bbb; }
+
+    .field input:focus {
+      border-color: #ee2a7b;
+      box-shadow: 0 0 0 4px rgba(238,42,123,0.08);
+    }
+
+    .field .go {
+      position: absolute;
+      right: 6px; top: 50%;
+      transform: translateY(-50%);
+      background: linear-gradient(135deg, #ee2a7b, #6228d7);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      padding: 0.55rem 1.1rem;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      white-space: nowrap;
+    }
+
+    .field .go:hover:not(:disabled) { opacity: 0.88; transform: translateY(-50%) scale(1.02); }
+    .field .go:disabled { opacity: 0.4; cursor: not-allowed; transform: translateY(-50%); }
+
+    /* ── STATUS PILL ── */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.3rem 0.75rem;
+      border-radius: 99px;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .pill.show { opacity: 1; }
+    .pill.loading { background: #fff3cd; color: #856404; }
+    .pill.ok      { background: #d1fae5; color: #065f46; }
+    .pill.err     { background: #fee2e2; color: #991b1b; }
+
+    .pill .spin {
+      width: 10px; height: 10px;
+      border: 1.5px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+
+    /* ── RESULTS ── */
+    .results { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .dl-card {
+      background: #fff;
+      border: 1.5px solid #f0ece5;
+      border-radius: 14px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      animation: pop 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    .dl-card .label {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #1a1a1a;
+    }
+
+    .dl-card .hint {
+      font-size: 0.72rem;
+      color: #bbb;
+      margin-top: 2px;
+    }
+
+    .dl-card a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #f5f0eb;
+      border: none;
+      border-radius: 8px;
+      color: #1a1a1a;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 0.5rem 0.9rem;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+
+    .dl-card a:hover { background: #ede7de; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: fixed;
+      bottom: 1rem; left: 0; right: 0;
+      text-align: center;
+      font-size: 0.65rem;
+      color: #ccc;
+      letter-spacing: 0.04em;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pop {
+      from { opacity: 0; transform: scale(0.94) translateY(6px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @media (max-width: 380px) {
+      .field input { padding-right: 1.2rem; }
+      .field .go { position: static; transform: none; width: 100%; margin-top: 0.5rem; padding: 0.75rem; border-radius: 10px; }
+      .field .go:hover:not(:disabled) { transform: none; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="brand">
-            <h1>📸 Instagram Downloader</h1>
-            <div class="creator">by Umar J</div>
-        </div>
-        <div class="input-group">
-            <label for="url">Instagram URL</label>
-            <input type="url" id="url" placeholder="Paste Instagram URL here..." required>
-        </div>
-        <button id="downloadBtn">🚀 Download</button>
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Processing...</p>
-        </div>
-        <div class="result" id="result"></div>
-        <div class="footer">
-            Made with ❤️ by <strong>Umar J</strong>
-        </div>
-    </div>
+<div class="page">
 
-    <script>
-        const urlInput = document.getElementById('url');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const loading = document.getElementById('loading');
-        const result = document.getElementById('result');
+  <div class="ig-icon">
+    <svg viewBox="0 0 24 24">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+      <circle cx="12" cy="12" r="4.5"/>
+      <circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/>
+    </svg>
+  </div>
 
-        downloadBtn.addEventListener('click', async () => {
-            const url = urlInput.value.trim();
-            if (!url) return;
+  <h1>Instagram<br>Downloader</h1>
+  <p class="sub">Reels, posts & videos — paste and go</p>
 
-            if (!url.includes('instagram.com')) {
-                showResult('error', '❌ Please enter a valid Instagram URL');
-                return;
-            }
+  <div class="field">
+    <input type="url" id="urlInput" placeholder="https://www.instagram.com/reel/…" autocomplete="off" spellcheck="false" />
+    <button class="go" id="fetchBtn">Download</button>
+  </div>
 
-            downloadBtn.disabled = true;
-            loading.style.display = 'block';
-            result.style.display = 'none';
+  <div class="pill" id="pill">
+    <span id="pillIcon"></span>
+    <span id="pillTxt"></span>
+  </div>
 
-            try {
-                const response = await fetch(`/api/igdl?url=${encodeURIComponent(url)}`);
-                const data = await response.json();
+  <div class="results" id="results"></div>
 
-                if (response.ok && data.success && data.data) {
-                    showResult('success', '✅ Download links ready!');
-                    let links = '';
-                    data.data.forEach((item, index) => {
-                        links += `<br><a href="${item.url}" target="_blank" style="color: #e73c7e; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 10px; padding: 8px 16px; background: rgba(231,60,126,0.1); border-radius: 8px; transition: all 0.3s;">📥 Download ${item.quality}</a>`;
-                    });
-                    result.innerHTML += links;
-                } else {
-                    showResult('error', '❌ ' + (data.error || 'Download failed'));
-                }
-            } catch (error) {
-                showResult('error', '❌ Network error. Please try again.');
-            } finally {
-                downloadBtn.disabled = false;
-                loading.style.display = 'none';
-            }
-        });
+</div>
 
-        function showResult(type, message) {
-            result.className = `result ${type}`;
-            result.innerHTML = message;
-            result.style.display = 'block';
-        }
+<footer>built by Umar J</footer>
 
-        urlInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') downloadBtn.click();
-        });
-    </script>
+<script>
+  const inp  = document.getElementById('urlInput');
+  const btn  = document.getElementById('fetchBtn');
+  const pill = document.getElementById('pill');
+  const pico = document.getElementById('pillIcon');
+  const ptxt = document.getElementById('pillTxt');
+  const res  = document.getElementById('results');
+
+  function setPill(cls, icon, msg) {
+    pill.className = 'pill show ' + cls;
+    pico.innerHTML = icon;
+    ptxt.textContent = msg;
+  }
+
+  function addCard(item, i) {
+    const c = document.createElement('div');
+    c.className = 'dl-card';
+    c.style.animationDelay = (i * 0.08) + 's';
+    c.innerHTML = `
+      <div>
+        <div class="label">${item.quality || 'Video'}</div>
+        <div class="hint">tap to open in browser</div>
+      </div>
+      <a href="${item.url}" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6.5 1.5v8M3 7l3.5 3.5L10 7"/><line x1="1" y1="12" x2="12" y2="12"/>
+        </svg>
+        Open
+      </a>`;
+    res.appendChild(c);
+  }
+
+  async function run() {
+    const url = inp.value.trim();
+    if (!url) { setPill('err', '✕', 'Paste a link first'); return; }
+    if (!url.includes('instagram.com')) { setPill('err', '✕', 'Not an Instagram URL'); return; }
+
+    res.innerHTML = '';
+    btn.disabled = true;
+    setPill('loading', '<span class="spin"></span>', 'Fetching…');
+
+    try {
+      const r = await fetch(`/api/igdl?url=${encodeURIComponent(url)}`);
+      const d = await r.json();
+      if (r.ok && d.success && d.data?.length) {
+        setPill('ok', '✓', `${d.data.length} download link${d.data.length > 1 ? 's' : ''} ready`);
+        d.data.forEach((item, i) => addCard(item, i));
+      } else {
+        setPill('err', '✕', d.error || 'No video found — try another link');
+      }
+    } catch {
+      setPill('err', '✕', 'Network error — check your connection');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  btn.addEventListener('click', run);
+  inp.addEventListener('keydown', e => e.key === 'Enter' && run());
+</script>
 </body>
 </html>
